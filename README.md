@@ -15,3 +15,6 @@ Requires the use of the following native methods:
  - ```Array#indexOf```
  - ```Object#hasOwnProperty```
  - ```Function#bind```
+
+# Testing
+Includes minor integration testing code.
