@@ -229,7 +229,9 @@ define(function() {
         var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
         var namespaces = this.namespaces;
         
-        if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
+        if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
+            throw 'Error: triggering topic is a namespace and should be an event';
+        } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
             namespace = topic.substr(namespaceIndex + 1);
             event = topic.substr(0, namespaceIndex);
         } else {
