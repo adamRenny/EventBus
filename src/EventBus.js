@@ -126,37 +126,25 @@ define(function() {
         var events = this.events;
         var event;
         
-        if (!events.hasOwnProperty(name)) {
-            return
+        if (events.hasOwnProperty(name)) {
+            event = events[name]
+            event.trigger(args);
         }
         
-        event = events[name];
-        
-        event.trigger(args);
         this.event.trigger(args);
     };
     
     var _getNamespace = function(namespace) {
-        
-    };
-    
-    var _getEvent = function(namespace) {
-        
-    };
-    
-    var _getEventTarget = function(topic) {
-        var event;
-        var namespace;
-        var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
-        // Only a namespace
-        if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
-            namespace = topic.substr(1);
-        } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
-            namespace = topic.substr(namespaceIndex + 1);
-            event = topic.substr(0, namespaceIndex);
-        } else {
-            event = topic;
+        if (namespace === undefined) {
+            return this.events;
         }
+        
+        var namespaces = this.namespaces;
+        if (!namespaces.hasOwnProperty(namespace)) {
+            namespaces[namespace] = new Namespace(namespace);
+        }
+        
+        return namespaces[namespace];
     };
     
     /**
@@ -180,41 +168,78 @@ define(function() {
     // namespace
     EventBus.prototype.on = function(topic, callback) {
         if (topic === undefined || callback === undefined) {
-            throw 'UndefinedError: Subscribe usage: on(topic, callback)';
+            throw 'UndefinedError: On usage: on(topic, callback)';
         }
         
         if (typeof callback !== CALLBACK_TYPE) {
             throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
         }
         
-        var events = this.events;
-        if (!events.hasOwnProperty(event)) {
-            events[event] = [];
+        var event;
+        var namespace;
+        var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
+        
+        if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
+            namespace = topic.substr(1);
+        } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
+            namespace = topic.substr(namespaceIndex + 1);
+            event = topic.substr(0, namespaceIndex);
+        } else {
+            event = topic;
         }
         
-        var eventMessage = events[event];
-        if (eventMessage.indexOf(callback) !== -1) {
-            throw 'ExistentialError: Callback subscribing to topic ' + topic + ' already exists';
-        }
-        
-        eventMessage.push(callback);
+        var targetNamespace = _getNamespace.call(this, namespace);
+        targetNamespace.add(callback, event);
     };
     
     // namespace + event
     // event
     // namespace
     EventBus.prototype.off = function(topic, callback) {
+        if (topic === undefined || callback === undefined) {
+            throw 'UndefinedError: Off usage: on(topic, callback)';
+        }
         
-    };
-    
-    EventBus.prototype.has = function(topic, callback) {
+        if (typeof callback !== CALLBACK_TYPE) {
+            throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
+        }
         
+        var event;
+        var namespace;
+        var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
+        
+        if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
+            namespace = topic.substr(1);
+        } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
+            namespace = topic.substr(namespaceIndex + 1);
+            event = topic.substr(0, namespaceIndex);
+        } else {
+            event = topic;
+        }
+        
+        var targetNamespace = _getNamespace.call(this, namespace);
+        targetNamespace.remove(callback, event);
     };
     
     // event
     // event + namespace
     EventBus.prototype.trigger = function(topic) {
+        var event;
+        var namespace;
+        var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
+        var namespaces = this.namespaces;
         
+        if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
+            namespace = topic.substr(namespaceIndex + 1);
+            event = topic.substr(0, namespaceIndex);
+        } else {
+            event = topic;
+        }
+        
+        if (namespace && namespaces.hasOwnProperty(namespace)) {
+            namespaces[namespace].trigger(event, arguments);
+        }
+        this.events.trigger(event, arguments);
     };
     
     return EventBus;
