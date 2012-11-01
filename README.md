@@ -1,6 +1,13 @@
 # Events
 Context-less, namespace-able event system via publish-subscribe observer pattern.
 
+## Licensing
+EventBus is licensed under the [MIT license](http://opensource.org/licenses/mit-license.html).
+
+EventBus includes functional polyfills for ```Array#indexOf``` and ```Function#bind``` within ```dependency.js```. These are licensed under the [MPL license](http://www.mozilla.org/MPL/2.0/).
+
+The ```dependency.js``` is intended to be included separate from the EventBus to avoid infringing on any sort of licensing breaches that would occur with compilation of the EventBus and the project it is used in.
+
 ## Interface
 Uses common ```on```, ```off```, and ```trigger``` interface calls.
 
