@@ -28,8 +28,8 @@
  * @version 2.0
  */
 define(function() {
-    "use strict";
-    
+    'use strict';
+
     /**
      * Local definition of the window for faster access
      *
@@ -39,7 +39,7 @@ define(function() {
      * @since 2.0
      */
     var WINDOW = window;
-    
+
     /**
      * Type definition that all callbacks must be
      * Used to compare all callback types against
@@ -49,7 +49,7 @@ define(function() {
      * @since 1.0
      */
     var CALLBACK_TYPE = 'function';
-    
+
     /**
      * Separator used to differentiate events and the namespace
      *
@@ -58,7 +58,7 @@ define(function() {
      * @since 2.0
      */
     var NAMESPACE_SEPARATOR = '.';
-    
+
     /**
      * Index to indicate that an element was not found
      *
@@ -67,14 +67,14 @@ define(function() {
      * @since 2.0
      */
     var NOT_FOUND_INDEX = -1;
-    
+
     /**
      * Event dispatching component used to dispatch events of its own type
      * Helper class to support event dispatching
      * Used to contain event callback relationships
      * Follows the observer pattern subject interface
      * Managed by Namespace structures and the EventBus
-     * 
+     *
      * @private
      * @name Event
      * @class Event observer dispatch structure
@@ -92,7 +92,7 @@ define(function() {
          * @since 2.0
          */
         this.name = name;
-        
+
         /**
          * Set of callbacks used for observing
          * Collection of functions to call on Event call
@@ -103,7 +103,7 @@ define(function() {
          */
         this.observers = [];
     };
-    
+
     /**
      * Adds a function to callback with on successful trigger
      * Silently fails if the callback already exists
@@ -116,10 +116,10 @@ define(function() {
         if (observers.indexOf(callback) !== NOT_FOUND_INDEX) {
             return;
         }
-        
+
         observers.push(callback);
     };
-    
+
     /**
      * Removes a function that was originally registered to this event
      * Silently fails if the callback doesn't exist
@@ -133,10 +133,10 @@ define(function() {
         if (index === NOT_FOUND_INDEX) {
             return;
         }
-        
+
         observers.splice(index, 1);
     };
-    
+
     /**
      * Check to verify whether the event is holding a callback
      *
@@ -147,7 +147,7 @@ define(function() {
     Event.prototype.has = function(callback) {
         return this.observers.indexOf(callback) !== NOT_FOUND_INDEX;
     };
-    
+
     /**
      * Trigger call to fire off any observers
      * Calls the method with the arguments supplied
@@ -165,10 +165,10 @@ define(function() {
             observers[i].apply(WINDOW, args);
         }
     };
-    
+
     /**
      * Namespace container to associate namespace-specific events
-     * 
+     *
      * @private
      * @name Namespace
      * @class Namespace structure to associate a namespace with specific events
@@ -186,7 +186,7 @@ define(function() {
          * @since 2.0
          */
         this.name = name;
-        
+
         /**
          * Namespace event to allow observation on the namespace level
          *
@@ -195,7 +195,7 @@ define(function() {
          * @since 2.0
          */
         this.event = new Event(name);
-        
+
         /**
          * Set of event objects to associate with the namespace
          *
@@ -205,7 +205,7 @@ define(function() {
          */
         this.events = {};
     };
-    
+
     /**
      * Adds a function to callback with on successful trigger
      * Silently fails if the callback already exists
@@ -219,22 +219,22 @@ define(function() {
     Namespace.prototype.add = function(callback, name) {
         var events = this.events;
         var event;
-        
+
         // Sets up the events if a name is supplied
         if (name !== undefined) {
             if (!events.hasOwnProperty(name)) {
                 events[name] = new Event(name);
             }
-            
+
             event = events[name];
         // Uses the local namespace event if no name is supplied
         } else {
             event = this.event;
         }
-        
+
         event.add(callback);
     };
-    
+
     /**
      * Removes a function that was originally registered to this event
      * Silently fails if the callback doesn't exist
@@ -248,22 +248,22 @@ define(function() {
     Namespace.prototype.remove = function(callback, name) {
         var events = this.events;
         var event;
-        
+
         // Sets up the events if a name is supplied
         if (name !== undefined) {
             if (!events.hasOwnProperty(name)) {
                 events[name] = new Event(name);
             }
-            
+
             event = events[name];
         // Uses the local namespace event if no name is supplied
         } else {
             event = this.event;
         }
-        
+
         event.remove(callback);
     };
-    
+
     /**
      * Trigger call to fire off any observers
      * Triggers the local events after triggering the specific event type
@@ -275,15 +275,15 @@ define(function() {
     Namespace.prototype.trigger = function(name, args) {
         var events = this.events;
         var event;
-        
+
         if (events.hasOwnProperty(name)) {
             event = events[name];
             event.trigger(args);
         }
-        
+
         this.event.trigger(args);
     };
-    
+
     /**
      * Finds the namespace object for the supplied namespace
      * Called from the context of the owning EventBus
@@ -298,15 +298,15 @@ define(function() {
         if (namespace === undefined) {
             return this.events;
         }
-        
+
         var namespaces = this.namespaces;
         if (!namespaces.hasOwnProperty(namespace)) {
             namespaces[namespace] = new Namespace(namespace);
         }
-        
+
         return namespaces[namespace];
     };
-    
+
     /**
      * EventBus Constructor
      *
@@ -331,7 +331,7 @@ define(function() {
          * @since 2.0
          */
         this.events = new Namespace('');
-        
+
         /**
          * Collection of namespaced organized by namespace name key
          *
@@ -340,7 +340,7 @@ define(function() {
          * @since 2.0
          */
         this.namespaces = {};
-        
+
         /**
          * Convenience function to gather the namespace
          * Gets a new namespace if it doesn't exist
@@ -352,7 +352,7 @@ define(function() {
          */
         this.getNamespace = _getNamespace.bind(this);
     };
-    
+
     /**
      * Sets up a callback for a topic
      * Topic is divided between event and namespace, using a period '.' to separate
@@ -364,21 +364,22 @@ define(function() {
      *
      * @param {string} topic Topic storing an event, a namespace, or a namespaced event
      * @param {function} callback Function to call upon successful trigger
+     * @returns {EventBus}
      * @since 2.0
      */
     EventBus.prototype.on = function(topic, callback) {
         if (topic === undefined || callback === undefined) {
             throw 'UndefinedError: On usage: on(topic, callback)';
         }
-        
+
         if (typeof callback !== CALLBACK_TYPE) {
             throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
         }
-        
+
         var event;
         var namespace;
         var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
-        
+
         // If there's only a namespace
         if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
             namespace = topic.substr(1);
@@ -390,11 +391,13 @@ define(function() {
         } else {
             event = topic;
         }
-        
+
         var targetNamespace = this.getNamespace(namespace);
         targetNamespace.add(callback, event);
+
+        return this;
     };
-    
+
     /**
      * Tears down the callback for a topic
      * Topic is divided between event and namespace, using a period '.' to separate
@@ -405,21 +408,22 @@ define(function() {
      *
      * @param {string} topic Topic storing an event, a namespace, or a namespaced event
      * @param {function} callback Function to remove from observation
+     * @returns {EventBus}
      * @since 2.0
      */
     EventBus.prototype.off = function(topic, callback) {
         if (topic === undefined || callback === undefined) {
             throw 'UndefinedError: Off usage: on(topic, callback)';
         }
-        
+
         if (typeof callback !== CALLBACK_TYPE) {
             throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
         }
-        
+
         var event;
         var namespace;
         var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
-        
+
         // If there's only a namespace
         if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
             namespace = topic.substr(1);
@@ -431,11 +435,13 @@ define(function() {
         } else {
             event = topic;
         }
-        
+
         var targetNamespace = _getNamespace.call(this, namespace);
         targetNamespace.remove(callback, event);
+
+        return this;
     };
-    
+
     /**
      * Triggers the event for a specific topic
      * Topic is divided between event and namespace, using a period '.' to separate
@@ -443,6 +449,7 @@ define(function() {
      * @throws {Error} When the topic is only a namespace
      *
      * @param {string} topic Topic storing an event, a namespace, or a namespaced event
+     * @returns {EventBus}
      * @since 2.0
      */
     EventBus.prototype.trigger = function(topic) {
@@ -450,7 +457,7 @@ define(function() {
         var namespace;
         var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
         var namespaces = this.namespaces;
-        
+
         if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
             throw 'Error: triggering topic is a namespace and should be an event';
         } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
@@ -459,13 +466,15 @@ define(function() {
         } else {
             event = topic;
         }
-        
+
         if (namespace && namespaces.hasOwnProperty(namespace)) {
             namespaces[namespace].trigger(event, arguments);
         }
-        
+
         this.events.trigger(event, arguments);
+
+        return this;
     };
-    
+
     return EventBus;
 });
