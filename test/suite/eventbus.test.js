@@ -5,7 +5,7 @@ define([
 ) {
     "use strict";
     
-    describe('Integration Tests: Events', function() {
+    describe('Events', function() {
         var Events;
         var confirmation = false;
         var callback = function() {
