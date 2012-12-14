@@ -24,7 +24,7 @@
  *
  * EventBus Module Definition
  * Needs Object.prototype.hasOwnProperty, Array.prototype.indexOf, and Function.prototype.bind
- * @author Adam Ranfelt <adamRenny@gmail.com>
+ * @author Adam Ranfelt
  * @version 2.0
  */
 define(function() {
