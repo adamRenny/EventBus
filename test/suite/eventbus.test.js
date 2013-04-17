@@ -11,6 +11,10 @@ define([
         var callback = function() {
             confirmation = true;
         };
+        var closingCallback = function() {
+            confirmation = false;
+        };
+
         var eventType = 'test';
         var namespace = '.ns';
         
@@ -85,6 +89,23 @@ define([
                 success = false;
             }
             expect(confirmation).to.be(false);
+        });
+
+        it('can remove listeners while triggering an event', function() {
+            var removingCallback = function() {
+                confirmation = true;
+                Events.off(eventType, removingCallback);
+            };
+
+            expect(confirmation).to.be(false);
+
+            Events.on(eventType, removingCallback)
+                  .on(eventType, closingCallback);
+
+            Events.trigger(eventType);
+
+            expect(confirmation).to.be(false);
+
         });
     });
 });

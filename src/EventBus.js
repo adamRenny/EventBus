@@ -152,13 +152,14 @@ define(function() {
      * Trigger call to fire off any observers
      * Calls the method with the arguments supplied
      * Passes the event type as the first parameter
+     * Performs trigger using an atomic set, so if any are removed during trigger
      *
      * @param {Arguments} args Arguments from the managing EventBus
      * @since 2.0
      */
     Event.prototype.trigger = function(args) {
         var i = 0;
-        var observers = this.observers;
+        var observers = this.observers.slice(0);
         var length = observers.length;
         args[0] = this.name;
         for (; i < length; i++) {
@@ -261,7 +262,9 @@ define(function() {
             event = this.event;
         }
 
+        console.log(event);
         event.remove(callback);
+        console.log(event);
     };
 
     /**
@@ -436,7 +439,7 @@ define(function() {
             event = topic;
         }
 
-        var targetNamespace = _getNamespace.call(this, namespace);
+        var targetNamespace = this.getNamespace(namespace);
         targetNamespace.remove(callback, event);
 
         return this;
