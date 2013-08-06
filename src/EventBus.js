@@ -262,9 +262,7 @@ define(function() {
             event = this.event;
         }
 
-        console.log(event);
         event.remove(callback);
-        console.log(event);
     };
 
     /**
