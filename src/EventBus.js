@@ -27,7 +27,7 @@
  * @author Adam Ranfelt
  * @version 2.0.1
  */
-define(function() {
+define(function(require, module, exports) {
     'use strict';
 
     /**
