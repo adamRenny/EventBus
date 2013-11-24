@@ -1,0 +1,35 @@
+{
+  "name": "EventBus",
+  "version": "0.3.3",
+  "ignore": [
+    "**/.*",
+    "test",
+    "*.md",
+    "AUTHORS.txt",
+    "Gruntfile.js",
+    "package.json",
+    "bower.json",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "polyfills-pkg": "~0.1.1"
+  },
+  "keywords": [
+    "javascript",
+    "event",
+    "events",
+    "eventbus",
+    "dispatcher",
+    "eventdispatcher",
+    "eventemitter"
+  ],
+  "homepage": "https://github.com/adamRenny/EventBus",
+  "authors": [
+    "Adam Ranfelt <adamRenny@gmail.com>"
+  ],
+  "description": "Event dispatching module for listening to events. Supports namespacing and can be extended for using within other objects.",
+  "main": "dist/EventBus.js",
+  "license": "MIT"
+}
