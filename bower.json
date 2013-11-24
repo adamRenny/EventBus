@@ -1,6 +1,6 @@
 {
   "name": "EventBus",
-  "version": "0.3.3",
+  "version": "1.0.0",
   "ignore": [
     "**/.*",
     "test",
@@ -11,7 +11,10 @@
     "bower.json",
     "node_modules",
     "bower_components",
-    "tests"
+    "tests",
+    "lib",
+    "plato",
+    "Makefile"
   ],
   "dependencies": {
     "polyfills-pkg": "~0.1.1"

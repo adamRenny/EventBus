@@ -17,8 +17,9 @@
     /**
      * Index to indicate that an element was not found
      *
+     * @property NOT_FOUND_INDEX
      * @type {number}
-     * @constant
-     * @since 2.0
+     * @final
+     * @static
      */
     var NOT_FOUND_INDEX = -1;

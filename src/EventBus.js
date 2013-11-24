@@ -1,6 +1,5 @@
 /* global Namespace: true */
 /**
- * @fileOverview
  * Copyright (c) 2012-2013 Adam Ranfelt
  *
  * Permission is hereby granted, free of charge, to any person
@@ -24,27 +23,28 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * EventBus Module Definition
- * Needs Object.prototype.hasOwnProperty, Array.prototype.indexOf, and Function.prototype.bind
- * @author Adam Ranfelt
- * @version 2.0.1
  */
 
 /**
  * Type definition that all callbacks must be
  * Used to compare all callback types against
  *
+ * @for EventBus
+ * @property CALLBACK_TYPE
  * @type {string}
- * @constant
- * @since 1.0
+ * @final
+ * @static
  */
 var CALLBACK_TYPE = 'function';
 
 /**
  * Separator used to differentiate events and the namespace
  *
+ * @for EventBus
+ * @property NAMESPACE_SEPARATOR
  * @type {string}
- * @constant
- * @since 2.0
+ * @final
+ * @static
  */
 var NAMESPACE_SEPARATOR = '.';
 
@@ -54,9 +54,11 @@ var NAMESPACE_SEPARATOR = '.';
  * Creates the necessary Namespace if one is not already defined
  *
  * @private
+ * @for EventBus
+ * @method _getNamespace
  * @param {string} namespace Namespace name to collect
  * @param {Arguments} args Arguments from the managing EventBus
- * @since 2.0
+ * @returns Namespace
  */
 var _getNamespace = function(namespace) {
     if (namespace === undefined) {
@@ -78,44 +80,39 @@ var _getNamespace = function(namespace) {
  * Publishes messages based on topics on a topic-to-callback basis
  * Allows namespacing to differentiate source and listen for all namespaced structures
  * Handles observation via function and retains no context about that function
+ * Publish-subscribe observer model
  *
- * @name EventBus
- * @class Publish-subscribe observer model
+ * @class EventBus
  * @constructor
- * @since 1.0
  */
-var EventBus = function() {
-    /**
-     * Basic event calling structure
-     * Retains no name or namespace
-     * Used to call out each event trigger
-     *
-     * @name EventBus#events
-     * @type {Namespace}
-     * @since 2.0
-     */
+var EventBus = function EventBus() {
+    
     this.events = new Namespace('');
-
-    /**
-     * Collection of namespaced organized by namespace name key
-     *
-     * @name EventBus#namespaces
-     * @type {object}
-     * @since 2.0
-     */
     this.namespaces = {};
-
-    /**
-     * Convenience function to gather the namespace
-     * Gets a new namespace if it doesn't exist
-     *
-     * @function
-     * @name EventBus#getNamespace
-     * @type {function}
-     * @since 2.0
-     */
-    this.getNamespace = _getNamespace.bind(this);
 };
+
+var proto = EventBus.prototype;
+
+/**
+ * Basic event calling structure
+ * Retains no name or namespace
+ * Used to call out each event trigger
+ *
+ * @for EventBus
+ * @property events
+ * @type {Namespace}
+ */
+proto.events = null;
+
+/**
+ * Collection of namespaced organized by namespace name key
+ *
+ * @for EventBus
+ * @property namespaces
+ * @type {object}
+ */
+proto.namespaces = null;
+
 
 /**
  * Sets up a callback for a topic
@@ -123,21 +120,22 @@ var EventBus = function() {
  * Callback is given the context of the window to call from
  * Fails silently if it is observing
  *
- * @throws {UndefinedError} When the topic or callback is not supplied
- * @throws {TypeError} When the callback is not a function
+ * @event {UndefinedError} When the topic or callback is not supplied
+ * @event {TypeError} When the callback is not a function
  *
+ * @for EventBus
+ * @method on
  * @param {string} topic Topic storing an event, a namespace, or a namespaced event
  * @param {function} callback Function to call upon successful trigger
- * @returns {EventBus}
- * @since 2.0
+ * @chainable
  */
-EventBus.prototype.on = function(topic, callback) {
+EventBus.prototype.on = function eventBusOn(topic, callback) {
     if (topic === undefined || callback === undefined) {
-        throw 'UndefinedError: On usage: on(topic, callback)';
+        throw new TypeError('UndefinedError: On usage: on(topic, callback)');
     }
 
     if (typeof callback !== CALLBACK_TYPE) {
-        throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
+        throw new TypeError('TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE);
     }
 
     var event;
@@ -156,7 +154,7 @@ EventBus.prototype.on = function(topic, callback) {
         event = topic;
     }
 
-    var targetNamespace = this.getNamespace(namespace);
+    var targetNamespace = _getNamespace.call(this, namespace);
     targetNamespace.add(callback, event);
 
     return this;
@@ -167,21 +165,22 @@ EventBus.prototype.on = function(topic, callback) {
  * Topic is divided between event and namespace, using a period '.' to separate
  * Fails silently if it is not already observing
  *
- * @throws {UndefinedError} When the topic or callback is not supplied
- * @throws {TypeError} When the callback is not a function
+ * @event {UndefinedError} When the topic or callback is not supplied
+ * @event {TypeError} When the callback is not a function
  *
+ * @for EventBus
+ * @method off
  * @param {string} topic Topic storing an event, a namespace, or a namespaced event
  * @param {function} callback Function to remove from observation
- * @returns {EventBus}
- * @since 2.0
+ * @chainable
  */
-EventBus.prototype.off = function(topic, callback) {
+EventBus.prototype.off = function eventBusOff(topic, callback) {
     if (topic === undefined || callback === undefined) {
-        throw 'UndefinedError: Off usage: on(topic, callback)';
+        throw new TypeError('UndefinedError: Off usage: on(topic, callback)');
     }
 
     if (typeof callback !== CALLBACK_TYPE) {
-        throw 'TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE;
+        throw new TypeError('TypeError: Callback subscribing is of type ' + (typeof callback) + ' not of type ' + CALLBACK_TYPE);
     }
 
     var event;
@@ -200,7 +199,7 @@ EventBus.prototype.off = function(topic, callback) {
         event = topic;
     }
 
-    var targetNamespace = this.getNamespace(namespace);
+    var targetNamespace = _getNamespace.call(this, namespace);
     targetNamespace.remove(callback, event);
 
     return this;
@@ -210,20 +209,21 @@ EventBus.prototype.off = function(topic, callback) {
  * Triggers the event for a specific topic
  * Topic is divided between event and namespace, using a period '.' to separate
  *
- * @throws {Error} When the topic is only a namespace
+ * @event {Error} When the topic is only a namespace
  *
+ * @for EventBus
+ * @method trigger
  * @param {string} topic Topic storing an event, a namespace, or a namespaced event
- * @returns {EventBus}
- * @since 2.0
+ * @chainable
  */
-EventBus.prototype.trigger = function(topic) {
+EventBus.prototype.trigger = function eventBusTrigger(topic) {
     var event;
     var namespace;
     var namespaceIndex = topic.lastIndexOf(NAMESPACE_SEPARATOR);
     var namespaces = this.namespaces;
 
     if (topic.charAt(0) === NAMESPACE_SEPARATOR && topic.length !== 1) {
-        throw 'Error: triggering topic is a namespace and should be an event';
+        throw new TypeError('Error: triggering topic is a namespace and should be an event');
     } else if (namespaceIndex !== NOT_FOUND_INDEX && namespaceIndex !== topic.length - 1) {
         namespace = topic.substr(namespaceIndex + 1);
         event = topic.substr(0, namespaceIndex);

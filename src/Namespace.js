@@ -1,43 +1,74 @@
 /* global Event: true */
 /**
- * Namespace container to associate namespace-specific events
+ * Copyright (c) 2012-2013 Adam Ranfelt
  *
- * @private
- * @name Namespace
- * @class Namespace structure to associate a namespace with specific events
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+ * OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * EventBus.Namespace Module Definition
+ */
+
+/**
+ * Namespace container to associate namespace-specific events
+ * Structure to associate a namespace with specific events
+ *
+ * @class Namespace
  * @constructor
  *
  * @param {string} name Namespace name
- * @since 2.0
  */
-var Namespace = function(name) {
-    /**
-     * Namespace name
-     *
-     * @name Namespace#name
-     * @type {string}
-     * @since 2.0
-     */
+var Namespace = function Namespace(name) {
+
     this.name = name;
-
-    /**
-     * Namespace event to allow observation on the namespace level
-     *
-     * @name Namespace#event
-     * @type {Event}
-     * @since 2.0
-     */
     this.event = new Event(name);
-
-    /**
-     * Set of event objects to associate with the namespace
-     *
-     * @name Namespace#events
-     * @type {object}
-     * @since 2.0
-     */
     this.events = {};
 };
+
+var proto = Namespace.prototype;
+
+/**
+ * Namespace name
+ *
+ * @for Namespace
+ * @property name
+ * @type {string}
+ */
+proto.name = '';
+
+/**
+ * Namespace event to allow observation on the namespace level
+ *
+ * @for Namespace
+ * @property event
+ * @type {Event}
+ */
+proto.event = null;
+
+/**
+ * Set of event objects to associate with the namespace
+ *
+ * @for Namespace
+ * @property events
+ * @type {object}
+ */
+proto.events = {};
 
 /**
  * Adds a function to callback with on successful trigger
@@ -45,11 +76,12 @@ var Namespace = function(name) {
  * Adds to the namespace if the name is undefined
  * Adds to an event if the name is supplied
  *
+ * @for Namespace
+ * @method add
  * @param {function} callback Callback method to observe with
  * @param {string} name Event name type
- * @since 2.0
  */
-Namespace.prototype.add = function(callback, name) {
+proto.add = function namespaceAdd(callback, name) {
     var events = this.events;
     var event;
 
@@ -74,11 +106,12 @@ Namespace.prototype.add = function(callback, name) {
  * Removes from the namespace if the name is undefined
  * Removes from an event if the name is supplied
  *
+ * @for Namespace
+ * @method remove
  * @param {function} callback Callback method to remove
  * @param {string} name Event name type
- * @since 2.0
  */
-Namespace.prototype.remove = function(callback, name) {
+proto.remove = function namespaceRemove(callback, name) {
     var events = this.events;
     var event;
 
@@ -101,11 +134,12 @@ Namespace.prototype.remove = function(callback, name) {
  * Trigger call to fire off any observers
  * Triggers the local events after triggering the specific event type
  *
+ * @for Namespace
+ * @method trigger
  * @param {string} name Event type to trigger
  * @param {Arguments} args Arguments from the managing EventBus
- * @since 2.0
  */
-Namespace.prototype.trigger = function(name, args) {
+proto.trigger = function namespaceTrigger(name, args) {
     var events = this.events;
     var event;
 
