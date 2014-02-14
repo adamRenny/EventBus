@@ -155,7 +155,7 @@ if (typeof Function.prototype.bind !== 'function') {
         var boundFn = function() {
             var invokeArgs = slice.call(arguments, 0);
 
-            mainFn.apply(thisArg, boundArgs.concat(invokeArgs));
+            return mainFn.apply(thisArg, boundArgs.concat(invokeArgs));
         };
 
         // These two clauses will not run due to being unable to change these
@@ -340,6 +340,8 @@ proto.trigger = function eventTrigger(args) {
  * EventBus.Namespace Module Definition
  */
 
+// implement get event with name to produce a getter that creates the event in the event it does not exist
+
 /**
  * Namespace container to associate namespace-specific events
  * Structure to associate a namespace with specific events
@@ -398,7 +400,7 @@ proto.events = {};
  */
 proto.add = function namespaceAdd(callback, name) {
     var events = this.events;
-    var event;
+    var event = this.event;
 
     // Sets up the events if a name is supplied
     if (name !== undefined) {
@@ -408,8 +410,6 @@ proto.add = function namespaceAdd(callback, name) {
 
         event = events[name];
     // Uses the local namespace event if no name is supplied
-    } else {
-        event = this.event;
     }
 
     event.add(callback);
@@ -428,7 +428,7 @@ proto.add = function namespaceAdd(callback, name) {
  */
 proto.remove = function namespaceRemove(callback, name) {
     var events = this.events;
-    var event;
+    var event = this.event;
 
     // Sets up the events if a name is supplied
     if (name !== undefined) {
@@ -438,8 +438,6 @@ proto.remove = function namespaceRemove(callback, name) {
 
         event = events[name];
     // Uses the local namespace event if no name is supplied
-    } else {
-        event = this.event;
     }
 
     event.remove(callback);
@@ -491,6 +489,10 @@ proto.trigger = function namespaceTrigger(name, args) {
  *
  * EventBus Module Definition
  */
+
+// Implement assertion for parameters on on/off
+// Implement namespace extraction method in place of if statement
+// Implement event extraction method in place of if statement
 
 /**
  * Type definition that all callbacks must be

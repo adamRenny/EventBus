@@ -25,6 +25,10 @@
  * EventBus Module Definition
  */
 
+// Implement assertion for parameters on on/off
+// Implement namespace extraction method in place of if statement
+// Implement event extraction method in place of if statement
+
 /**
  * Type definition that all callbacks must be
  * Used to compare all callback types against
